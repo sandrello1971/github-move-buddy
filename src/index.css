@@ -8,89 +8,76 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    /* New Feminine Color Palette - Versione Attenuata */
+    --background: 0 0% 100%; /* Bianco puro #FFFFFF */
+    --foreground: 0 0% 20%; /* Grigio grafite #333333 */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 0 0% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
+    --popover-foreground: 0 0% 20%;
+    --primary: 177 91% 38%; /* Teal #0ABAB5 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 14 60% 88%; /* Pesca molto tenue #F5DDD7 */
+    --secondary-foreground: 0 0% 20%;
+    --muted: 14 40% 95%; /* Pesca leggerissima per sfondi */
+    --muted-foreground: 0 0% 40%; /* Grigio più chiaro per testo secondario */
+    --accent: 332 45% 75%; /* Fucsia molto attenuato #DFA3C7 */
+    --accent-foreground: 0 0% 20%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 88%; /* Grigio molto chiaro */
+    --input: 14 40% 95%;
+    --ring: 177 91% 38%;
     --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 177 91% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 14 60% 88%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 177 91% 38%;
+    /* Blog-specific colors - Attenuati */
+    --blog-hero: 335 100% 76%; /* Rosa chiaro #ff82b5 */
+    --blog-accent: 331 50% 75%; /* Rosa lampone attenuato #E8A8C7 */
+    --blog-muted: 14 60% 88%; /* Pesca tenue */
+    --blog-terracotta: 332 35% 65%; /* Fucsia tenue #C995B5 */
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
+    /* Dark Theme con nuova palette */
+    --background: 335 100% 8%; /* Rosa scuro #ff82b5 */
+    --foreground: 0 0% 95%; /* Bianco leggermente sporco */
+    --card: 335 100% 12%;
+    --card-foreground: 0 0% 95%;
+    --popover: 335 100% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 177 91% 50%; /* Teal più chiaro per dark mode */
+    --primary-foreground: 335 100% 8%;
+    --secondary: 14 100% 75%; /* Pesca meno saturata */
+    --secondary-foreground: 335 100% 8%;
+    --muted: 335 100% 20%; /* Rosa muted scuro */
+    --muted-foreground: 0 0% 70%; /* Grigio chiaro */
+    --accent: 332 75% 55%; /* Fucsia più chiaro */
+    --accent-foreground: 0 0% 95%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --destructive-foreground: 0 0% 95%;
+    --border: 335 100% 25%; /* Rosa bordo scuro */
+    --input: 335 100% 20%;
+    --ring: 177 91% 50%;
+    --sidebar-background: 335 100% 8%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 177 91% 50%;
+    --sidebar-primary-foreground: 335 100% 8%;
+    --sidebar-accent: 14 100% 75%;
+    --sidebar-accent-foreground: 335 100% 8%;
+    --sidebar-border: 335 100% 25%;
+    --sidebar-ring: 177 91% 50%;
+    /* Blog-specific dark colors */
+    --blog-hero: 331 78% 65%; /* Rosa lampone chiaro */
+    --blog-accent: 332 75% 55%; /* Fucsia chiaro */
+    --blog-muted: 14 100% 75%; /* Pesca scura */
+    --blog-terracotta: 335 100% 45%; /* Rosa medio */
   }
 }
 
@@ -100,6 +87,41 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Card hover animations */
+  .card-hover {
+    @apply transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-1 hover:scale-[1.02];
+  }
+  
+  /* Image hover effects */
+  .image-hover {
+    @apply transition-transform duration-500 ease-out hover:scale-110;
+  }
+  
+  /* Hero animations */
+  .hero-fade-in {
+    @apply animate-in fade-in-0 slide-in-from-bottom-4 duration-1000;
+  }
+  
+  /* Grid responsive */
+  .blog-grid {
+    @apply grid gap-8 md:grid-cols-2 lg:grid-cols-3;
+  }
+  
+  /* Content sections */
+  .content-section {
+    @apply py-16 px-4 relative;
+  }
+  
+  .content-section-alt {
+    @apply py-20 px-4 relative;
   }
 }
