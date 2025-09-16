@@ -124,4 +124,21 @@ All colors MUST be HSL.
   .content-section-alt {
     @apply py-20 px-4 relative;
   }
+  
+  /* Prose content image spacing */
+  .prose img[style*="float: left"] {
+    @apply mr-6 mb-4;
+  }
+  
+  .prose img[style*="float: right"] {
+    @apply ml-6 mb-4;
+  }
+  
+  .prose img[align="left"] {
+    @apply mr-6 mb-4;
+  }
+  
+  .prose img[align="right"] {
+    @apply ml-6 mb-4;
+  }
 }
