@@ -378,16 +378,14 @@ const EditPost = () => {
                   </Select>
                 </div>
                 
-                {status === 'published' && (
-                  <div>
-                    <DatePicker
-                      date={publishedDate}
-                      onDateChange={setPublishedDate}
-                      label="Data di pubblicazione"
-                      placeholder="Seleziona data"
-                    />
-                  </div>
-                )}
+                <div>
+                  <DatePicker
+                    date={publishedDate}
+                    onDateChange={setPublishedDate}
+                    label="Data di pubblicazione"
+                    placeholder="Seleziona data"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-4">

@@ -33,7 +33,7 @@ const CreatePost = () => {
   const [featuredImage, setFeaturedImage] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [status, setStatus] = useState<'draft' | 'published'>('draft');
-  const [publishedDate, setPublishedDate] = useState<Date | undefined>(undefined);
+  const [publishedDate, setPublishedDate] = useState<Date | undefined>(new Date());
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -231,16 +231,14 @@ const CreatePost = () => {
                   </Select>
                 </div>
                 
-                {status === 'published' && (
-                  <div>
-                    <DatePicker
-                      date={publishedDate}
-                      onDateChange={setPublishedDate}
-                      label="Data di pubblicazione"
-                      placeholder="Seleziona data (default: oggi)"
-                    />
-                  </div>
-                )}
+                <div>
+                  <DatePicker
+                    date={publishedDate}
+                    onDateChange={setPublishedDate}
+                    label="Data di pubblicazione"
+                    placeholder="Seleziona data"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-4">
