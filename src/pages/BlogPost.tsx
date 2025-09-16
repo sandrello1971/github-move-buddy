@@ -176,11 +176,11 @@ export default function BlogPost() {
 
           <article>
             {post.featured_image && (
-              <div className="aspect-video overflow-hidden rounded-lg mb-8">
+              <div className="overflow-hidden rounded-lg mb-8">
                 <img
                   src={post.featured_image}
                   alt={post.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto object-contain"
                 />
               </div>
             )}
