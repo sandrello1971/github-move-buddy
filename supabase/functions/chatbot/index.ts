@@ -5,6 +5,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 serve(async (req) => {
@@ -20,57 +21,71 @@ serve(async (req) => {
       throw new Error('Message is required');
     }
 
-    // Initialize Supabase client
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    // Rate limiting semplice basato su timestamp
-    const now = Date.now();
-    const rateLimitKey = `chatbot_${req.headers.get('x-forwarded-for') || 'unknown'}`;
-    
-    // Fetch recent blog posts to provide context
-    const { data: posts, error } = await supabase
-      .from('posts')
-      .select(`
-        title,
-        content,
-        excerpt,
-        slug,
-        post_categories(
-          categories(name, slug)
-        )
-      `)
-      .eq('status', 'published')
-      .order('published_at', { ascending: false })
-      .limit(10);
-
-    if (error) {
-      console.error('Error fetching posts:', error);
+    // Controllo della chiave API OpenAI
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openaiApiKey) {
+      throw new Error('OpenAI API key not configured');
     }
 
-    // Create context from blog posts
-    const blogContext = posts?.map(post => ({
-      title: post.title,
-      excerpt: post.excerpt,
-      categories: post.post_categories?.map(pc => pc.categories?.name).join(', '),
-      slug: post.slug
-    })) || [];
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase credentials missing');
+      // Procedi senza database per ora
+    }
 
-    const contextText = blogContext.map(post => 
-      `Titolo: ${post.title}\nDescrizione: ${post.excerpt}\nCategorie: ${post.categories}\nSlug: ${post.slug}`
-    ).join('\n\n');
+    let blogContext = [];
+    let contextText = 'Blog SabAdvance - contenuti su calcio femminile, sport, cucina e lifestyle.';
 
-    // Call OpenAI API
+    // Prova a recuperare i post solo se le credenziali Supabase sono disponibili
+    if (supabaseUrl && supabaseServiceKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        
+        const { data: posts, error } = await supabase
+          .from('posts')
+          .select(`
+            title,
+            content,
+            excerpt,
+            slug,
+            post_categories(
+              categories(name, slug)
+            )
+          `)
+          .eq('status', 'published')
+          .order('published_at', { ascending: false })
+          .limit(10);
+
+        if (!error && posts) {
+          blogContext = posts.map(post => ({
+            title: post.title,
+            excerpt: post.excerpt,
+            categories: post.post_categories?.map(pc => pc.categories?.name).join(', ') || '',
+            slug: post.slug
+          }));
+
+          contextText = blogContext.map(post => 
+            `Titolo: ${post.title}\nDescrizione: ${post.excerpt}\nCategorie: ${post.categories}\nSlug: ${post.slug}`
+          ).join('\n\n');
+        }
+      } catch (supabaseError) {
+        console.error('Error fetching from Supabase:', supabaseError);
+        // Continua senza i dati del database
+      }
+    }
+
+    // Call OpenAI API con modello corretto
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-3.5-turbo', // Modello corretto e disponibile
         messages: [
           {
             role: 'system',
@@ -108,26 +123,39 @@ IMPORTANTE: Rifiuta educatamente qualsiasi domanda non correlata ai contenuti de
             content: message
           }
         ],
-        max_completion_tokens: 300,
+        max_tokens: 300,
+        temperature: 0.7
       }),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'Failed to get AI response');
+      const errorData = await response.json();
+      console.error('OpenAI API Error:', errorData);
+      throw new Error(`OpenAI API Error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
-    const botMessage = data.choices[0].message.content;
+    const botMessage = data.choices?.[0]?.message?.content || 'Mi dispiace, non riesco a elaborare la tua richiesta.';
 
     return new Response(JSON.stringify({ message: botMessage }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
+    
   } catch (error) {
     console.error('Error in chatbot function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    
+    // Risposta di fallback più user-friendly
+    const fallbackMessage = "Mi dispiace, ho riscontrato un problema tecnico. Riprova più tardi o contatta il supporto.";
+    
+    return new Response(
+      JSON.stringify({ 
+        message: fallbackMessage,
+        error: error.message 
+      }), 
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });
