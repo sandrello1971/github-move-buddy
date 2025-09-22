@@ -85,7 +85,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Modello corretto e disponibile
+        model: 'gpt-4o', // Modello più avanzato (o usa 'gpt-4o-mini' per costi ridotti)
         messages: [
           {
             role: 'system',
