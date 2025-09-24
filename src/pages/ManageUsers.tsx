@@ -72,67 +72,44 @@ const ManageUsers = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Ottieni utenti con email tramite auth.users (solo admin può accedervi)
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) {
-        // Fallback: usa solo i profili se non abbiamo accesso admin
-        const { data: profiles, error: profilesError } = await supabase
-          .from('profiles')
-          .select('*')
-          .order('created_at', { ascending: false });
+      // Ottieni i profili degli utenti
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-        if (profilesError) throw profilesError;
+      if (profilesError) throw profilesError;
 
-        // Ottieni i ruoli
-        const { data: roles, error: rolesError } = await supabase
-          .from('user_roles')
-          .select('user_id, role');
+      // Ottieni i ruoli per ogni utente
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
 
-        if (rolesError) throw rolesError;
+      if (rolesError) throw rolesError;
 
-        const usersWithRoles = profiles?.map(profile => {
-          const userRoles = roles?.filter(role => role.user_id === profile.user_id) || [];
-          return {
-            id: profile.user_id,
-            email: 'Email non disponibile (accesso limitato)',
-            full_name: profile.full_name,
-            created_at: profile.created_at,
-            roles: userRoles.map(r => r.role)
-          };
-        }) || [];
+      // Ottieni la sessione corrente per recuperare l'email dell'utente loggato
+      const { data: { session } } = await supabase.auth.getSession();
 
-        setUsers(usersWithRoles);
-      } else {
-        // Se abbiamo accesso admin, ottieni anche i profili e ruoli
-        const { data: profiles, error: profilesError } = await supabase
-          .from('profiles')
-          .select('*');
-
-        const { data: roles, error: rolesError } = await supabase
-          .from('user_roles')
-          .select('user_id, role');
-
-        if (profilesError || rolesError) {
-          throw profilesError || rolesError;
+      // Combina i dati
+      const usersWithRoles = profiles?.map(profile => {
+        const userRoles = roles?.filter(role => role.user_id === profile.user_id) || [];
+        
+        // Se è l'utente corrente, usa l'email dalla sessione
+        let email = 'Email non disponibile';
+        if (session && profile.user_id === session.user.id) {
+          email = session.user.email || 'Email non disponibile';
         }
+        
+        return {
+          id: profile.user_id,
+          email: email,
+          full_name: profile.full_name,
+          created_at: profile.created_at,
+          roles: userRoles.map(r => r.role)
+        };
+      }) || [];
 
-        // Combina i dati con le email reali
-        const usersWithRoles = authUsers.users.map(authUser => {
-          const profile = profiles?.find(p => p.user_id === authUser.id);
-          const userRoles = roles?.filter(role => role.user_id === authUser.id) || [];
-          
-          return {
-            id: authUser.id,
-            email: authUser.email || 'Email non disponibile',
-            full_name: profile?.full_name || authUser.user_metadata?.full_name || 'Nome non disponibile',
-            created_at: profile?.created_at || authUser.created_at,
-            roles: userRoles.map(r => r.role)
-          };
-        }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-        setUsers(usersWithRoles);
-      }
+      setUsers(usersWithRoles);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
