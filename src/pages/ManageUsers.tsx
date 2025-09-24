@@ -6,7 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Shield, Users, Crown } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ArrowLeft, Shield, Users, Crown, Edit, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,6 +29,9 @@ const ManageUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editForm, setEditForm] = useState({ full_name: '' });
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -140,6 +146,78 @@ const ManageUsers = () => {
     }
   };
 
+  const updateUserProfile = async (userId: string, updates: { full_name: string }) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: updates.full_name,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Successo",
+        description: "Profilo utente aggiornato",
+      });
+
+      fetchUsers(); // Ricarica la lista
+      setIsEditDialogOpen(false);
+      setEditingUser(null);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: "Errore",
+        description: "Impossibile aggiornare il profilo",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteUser = async (userId: string) => {
+    if (!confirm('Sei sicuro di voler eliminare questo utente? Questa azione non può essere annullata.')) {
+      return;
+    }
+
+    try {
+      // Prima elimina i ruoli dell'utente
+      await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId);
+
+      // Poi elimina il profilo
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Successo",
+        description: "Utente eliminato",
+      });
+
+      fetchUsers(); // Ricarica la lista
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast({
+        title: "Errore",
+        description: "Impossibile eliminare l'utente",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user);
+    setEditForm({ full_name: user.full_name || '' });
+    setIsEditDialogOpen(true);
+  };
+
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'admin':
@@ -240,6 +318,24 @@ const ManageUsers = () => {
                           <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
+                      
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditUser(userData)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => deleteUser(userData.id)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -254,6 +350,44 @@ const ManageUsers = () => {
           </CardContent>
         </Card>
       </main>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Modifica Utente</DialogTitle>
+          </DialogHeader>
+          {editingUser && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="full_name">Nome Completo</Label>
+                <Input
+                  id="full_name"
+                  value={editForm.full_name}
+                  onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                  placeholder="Nome completo"
+                />
+              </div>
+              <div className="text-sm text-muted-foreground">
+                <div>ID: {editingUser.id}</div>
+                <div>Iscritto: {new Date(editingUser.created_at).toLocaleDateString('it-IT')}</div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
+                  Annulla
+                </Button>
+                <Button
+                  onClick={() => updateUserProfile(editingUser.id, editForm)}
+                >
+                  Salva
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
