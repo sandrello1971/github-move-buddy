@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface User {
   id: string;
-  email: string;
+  email: string | null;
   full_name: string | null;
   created_at: string;
   roles: string[];
@@ -30,7 +30,7 @@ const ManageUsers = () => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [editForm, setEditForm] = useState({ full_name: '' });
+  const [editForm, setEditForm] = useState({ full_name: '', email: '' });
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -87,22 +87,13 @@ const ManageUsers = () => {
 
       if (rolesError) throw rolesError;
 
-      // Ottieni la sessione corrente per recuperare l'email dell'utente loggato
-      const { data: { session } } = await supabase.auth.getSession();
-
       // Combina i dati
       const usersWithRoles = profiles?.map(profile => {
         const userRoles = roles?.filter(role => role.user_id === profile.user_id) || [];
         
-        // Se è l'utente corrente, usa l'email dalla sessione
-        let email = 'Email non disponibile';
-        if (session && profile.user_id === session.user.id) {
-          email = session.user.email || 'Email non disponibile';
-        }
-        
         return {
           id: profile.user_id,
-          email: email,
+          email: profile.email || 'Email non disponibile',
           full_name: profile.full_name,
           created_at: profile.created_at,
           roles: userRoles.map(r => r.role)
@@ -156,12 +147,13 @@ const ManageUsers = () => {
     }
   };
 
-  const updateUserProfile = async (userId: string, updates: { full_name: string }) => {
+  const updateUserProfile = async (userId: string, updates: { full_name: string; email: string }) => {
     try {
       const { error } = await supabase
         .from('profiles')
         .update({
           full_name: updates.full_name,
+          email: updates.email,
           updated_at: new Date().toISOString()
         })
         .eq('user_id', userId);
@@ -224,7 +216,10 @@ const ManageUsers = () => {
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);
-    setEditForm({ full_name: user.full_name || '' });
+    setEditForm({ 
+      full_name: user.full_name || '', 
+      email: user.email || '' 
+    });
     setIsEditDialogOpen(true);
   };
 
@@ -375,6 +370,16 @@ const ManageUsers = () => {
                   value={editForm.full_name}
                   onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
                   placeholder="Nome completo"
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  placeholder="Indirizzo email"
                 />
               </div>
               <div className="text-sm text-muted-foreground">
