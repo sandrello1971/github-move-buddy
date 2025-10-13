@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import DOMPurify from 'dompurify';
 
 interface Message {
   id: string;
@@ -94,11 +95,18 @@ const Chatbot: React.FC = () => {
   };
 
   const formatMessageContent = (content: string) => {
-    // Enhanced markdown-like formatting for links
-    return content.replace(
+    // Convert markdown-like links to HTML
+    const formatted = content.replace(
       /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" class="text-primary hover:underline font-medium underline cursor-pointer" onclick="window.location.href=\'$2\'; return false;">$1</a>'
+      '<a href="$2" class="text-primary hover:underline font-medium underline cursor-pointer">$1</a>'
     );
+    
+    // Sanitize HTML to prevent XSS attacks
+    return DOMPurify.sanitize(formatted, {
+      ALLOWED_TAGS: ['a', 'br', 'p', 'strong', 'em', 'b', 'i', 'u'],
+      ALLOWED_ATTR: ['href', 'class'],
+      ALLOW_DATA_ATTR: false
+    });
   };
 
   return (
