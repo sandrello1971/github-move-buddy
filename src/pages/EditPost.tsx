@@ -84,7 +84,17 @@ const EditPost = () => {
     if (!id) return;
     
     try {
-      const { data, error } = await supabase
+      // Verifica se l'utente è admin
+      const { data: userRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      const isAdmin = userRole?.role === 'admin';
+
+      // Se è admin, non filtra per author_id
+      let query = supabase
         .from('posts')
         .select(`
           *,
@@ -92,9 +102,13 @@ const EditPost = () => {
             categories(id, name, slug)
           )
         `)
-        .eq('id', id)
-        .eq('author_id', user?.id)
-        .single();
+        .eq('id', id);
+
+      if (!isAdmin) {
+        query = query.eq('author_id', user?.id);
+      }
+
+      const { data, error } = await query.single();
 
       if (error) throw error;
       
