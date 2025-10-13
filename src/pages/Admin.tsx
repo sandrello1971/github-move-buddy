@@ -43,7 +43,17 @@ export default function Admin() {
 
   const fetchPosts = async () => {
     try {
-      const { data, error } = await supabase
+      // Verifica se l'utente è admin
+      const { data: userRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user?.id)
+        .single();
+
+      const isAdmin = userRole?.role === 'admin';
+
+      // Se è admin, mostra tutti i post, altrimenti solo i propri
+      let query = supabase
         .from('posts')
         .select(`
           id,
@@ -55,9 +65,13 @@ export default function Admin() {
           post_categories(
             categories(name)
           )
-        `)
-        .eq('author_id', user?.id)
-        .order('created_at', { ascending: false });
+        `);
+
+      if (!isAdmin) {
+        query = query.eq('author_id', user?.id);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching posts:', error);
