@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Header } from '@/components/Header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CalendarDays, User, ArrowLeft } from 'lucide-react';
+import { CalendarDays, User, ArrowLeft, Facebook } from 'lucide-react';
 import { sanitizeHtml } from '@/utils/sanitizeHtml';
 import { SEO } from '@/components/SEO';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -200,17 +200,30 @@ export default function BlogPost() {
                 <p className="text-xl text-muted-foreground mb-6">{post.excerpt}</p>
               )}
 
-              <div className="flex items-center gap-6 text-sm text-muted-foreground border-b pb-6">
-                <div className="flex items-center gap-2">
-                  <CalendarDays className="h-4 w-4" />
-                  {formatDate(post.published_at)}
-                </div>
-                {authorName && (
+              <div className="flex items-center justify-between border-b pb-6">
+                <div className="flex items-center gap-6 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    {authorName}
+                    <CalendarDays className="h-4 w-4" />
+                    {formatDate(post.published_at)}
                   </div>
-                )}
+                  {authorName && (
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      {authorName}
+                    </div>
+                  )}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const url = `https://sabadvance.it/blog/${post.slug}`;
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
+                  }}
+                >
+                  <Facebook className="h-4 w-4 mr-2" />
+                  Condividi
+                </Button>
               </div>
             </header>
 
