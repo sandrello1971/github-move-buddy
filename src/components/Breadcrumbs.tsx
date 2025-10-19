@@ -11,7 +11,6 @@ interface BreadcrumbsProps {
 }
 
 export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
-  // Structured data for breadcrumbs
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -20,19 +19,22 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://sabadvance.it/"
+        "item": "https://sabadvance.it"
       },
       ...items.map((item, index) => ({
         "@type": "ListItem",
         "position": index + 2,
         "name": item.label,
-        "item": item.href ? `https://sabadvance.it${item.href}` : undefined
+        ...(item.href && { "item": `https://sabadvance.it${item.href}` })
       }))
     ]
   };
 
   return (
     <>
+      <script type="application/ld+json">
+        {JSON.stringify(breadcrumbStructuredData)}
+      </script>
       <nav aria-label="Breadcrumb" className="py-4">
         <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
           <li>
@@ -65,14 +67,9 @@ export const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                 </span>
               )}
             </li>
-          ))}
-        </ol>
-      </nav>
-      
-      {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(breadcrumbStructuredData)}
-      </script>
+        ))}
+      </ol>
+    </nav>
     </>
   );
 };

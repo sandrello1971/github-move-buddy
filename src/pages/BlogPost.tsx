@@ -180,6 +180,7 @@ export default function BlogPost() {
                 <img
                   src={post.featured_image}
                   alt={post.title}
+                  loading="lazy"
                   className="w-full h-auto object-contain"
                 />
               </div>

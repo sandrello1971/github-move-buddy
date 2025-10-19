@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-4 gap-12">
           <div className="col-span-2">
-            <img src={sabadvanceLogo} alt="Sabadvance" className="h-16 mb-4" />
+            <img src={sabadvanceLogo} alt="Sabadvance - Magazine Italiano" loading="lazy" className="h-16 mb-4" />
             <p className="text-background/80 text-lg leading-relaxed mb-6">
               Esplorando argomenti da tutto il mondo con curiosità, passione e una prospettiva unica.
             </p>

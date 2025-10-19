@@ -2,11 +2,22 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Mic, ChefHat, Heart, Users, Target, BookOpen } from 'lucide-react';
+import { SEO } from '@/components/SEO';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 const ChiSiamo = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Chi Siamo - Sabadvance"
+        description="Scopri la storia, la missione e i valori che guidano Sabadvance nel suo viaggio attraverso curiosità, cultura e conoscenza. Conosci Sabrina Bertolani, fondatrice del magazine."
+        keywords="chi siamo, sabadvance, sabrina bertolani, magazine italiano, mission, valori"
+        canonical="/chi-siamo"
+      />
       <Header />
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: 'Chi Siamo' }]} />
+      </div>
       
       {/* Hero Section */}
       <section className="content-section-alt">
@@ -265,7 +276,8 @@ const ChiSiamo = () => {
             <div className="relative">
               <img 
                 src="/lovable-uploads/16aab4aa-5d80-4927-b8a5-bf9aa180f3a0.png" 
-                alt="Sabrina Bertolani" 
+                alt="Sabrina Bertolani - Giornalista e fondatrice di Sabadvance" 
+                loading="lazy"
                 className="float-left w-80 h-auto rounded-2xl shadow-2xl mr-8 mb-6"
               />
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-blog-hero/10 to-transparent float-left w-80 mr-8 mb-6"></div>

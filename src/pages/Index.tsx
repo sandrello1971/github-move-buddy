@@ -131,7 +131,7 @@ const Index = () => {
       <section className="content-section-alt">
         <div className="container mx-auto max-w-5xl text-center hero-fade-in">
           <div className="mb-6">
-            <img src="/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png" alt="Sabadvance" className="h-32 w-auto mx-auto" />
+            <img src="/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png" alt="Sabadvance - Il Magazine che Nutre Mente e Spirito" className="h-32 w-auto mx-auto" />
           </div>
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-blog-hero mb-4 leading-tight drop-shadow-lg">
             Web magazine
@@ -250,6 +250,7 @@ const Index = () => {
                         <img 
                           src={post.featured_image} 
                           alt={post.title}
+                          loading="lazy"
                           className="w-full h-full object-cover image-hover"
                         />
                       ) : (

@@ -17,7 +17,7 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-          <img src={sabadvanceLogo} alt="Sabadvance" className="h-10 w-auto" />
+          <img src={sabadvanceLogo} alt="Sabadvance - Logo" className="h-10 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">

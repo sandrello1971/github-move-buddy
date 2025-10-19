@@ -1,9 +1,22 @@
 import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { SEO } from '@/components/SEO';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export default function Cookies() {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Cookie Policy - Sabadvance"
+        description="Informativa sull'uso dei cookie su Sabadvance. Scopri quali cookie utilizziamo e come gestirli."
+        keywords="cookie policy, privacy, cookies, sabadvance"
+        canonical="/cookies"
+        noindex={true}
+      />
       <Header />
+      <div className="container mx-auto px-4 pt-4">
+        <Breadcrumbs items={[{ label: 'Cookie Policy' }]} />
+      </div>
       
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <h1 className="text-4xl font-bold text-blog-hero mb-8">Cookie Policy</h1>
@@ -103,6 +116,8 @@ export default function Cookies() {
           </p>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }
