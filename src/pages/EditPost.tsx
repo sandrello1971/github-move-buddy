@@ -166,8 +166,8 @@ const EditPost = () => {
       const wasPublished = post.status === 'published';
       const isBeingPublished = status === 'published';
       const publishedAt = isBeingPublished 
-        ? (wasPublished && post.published_at ? post.published_at : 
-           (publishedDate ? publishedDate.toISOString() : new Date().toISOString()))
+        ? (publishedDate ? publishedDate.toISOString() : 
+           (wasPublished && post.published_at ? post.published_at : new Date().toISOString()))
         : null;
 
       const { error: updateError } = await supabase
