@@ -165,22 +165,10 @@ const EditPost = () => {
       const slug = generateSlug(title);
       const wasPublished = post.status === 'published';
       const isBeingPublished = status === 'published';
-      
-      console.log('Debug date:', {
-        publishedDate,
-        publishedDateISO: publishedDate?.toISOString(),
-        oldPublishedAt: post.published_at,
-        status,
-        wasPublished,
-        isBeingPublished
-      });
-      
       const publishedAt = isBeingPublished 
         ? (publishedDate ? publishedDate.toISOString() : 
            (wasPublished && post.published_at ? post.published_at : new Date().toISOString()))
         : null;
-      
-      console.log('Final publishedAt:', publishedAt);
 
       const { error: updateError } = await supabase
         .from('posts')
