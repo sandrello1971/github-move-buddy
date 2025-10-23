@@ -33,7 +33,7 @@ export const Header = () => {
             Cucina
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blog-terracotta transition-all duration-300 group-hover:w-full"></span>
           </Link>
-          <Link to="/blog?category=lifestyle" className="text-sm font-medium text-foreground hover:text-blog-terracotta transition-all duration-300 relative group">
+          <Link to="/blog?category=lifestyle-e-tempo-libero" className="text-sm font-medium text-foreground hover:text-blog-terracotta transition-all duration-300 relative group">
             Lifestyle
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blog-terracotta transition-all duration-300 group-hover:w-full"></span>
           </Link>

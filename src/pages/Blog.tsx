@@ -222,7 +222,7 @@ const getCategoryTitle = (slug: string): string => {
     interviste: 'Interviste',
     curiosita: 'Curiosità',
     cucina: 'Cucina',
-    lifestyle: 'Lifestyle',
+    'lifestyle-e-tempo-libero': 'Lifestyle e tempo libero',
     consigli: 'Consigli'
   };
   return titles[slug] || 'Blog';
@@ -233,7 +233,7 @@ const getCategoryDescription = (slug: string): string => {
     interviste: 'Conversazioni approfondite e interviste esclusive con esperti e personalità di rilievo.',
     curiosita: 'Scopri fatti affascinanti, storie incredibili e fenomeni misteriosi che arricchiranno la tua conoscenza del mondo.',
     cucina: 'Dalle ricette tradizionali ai piatti innovativi, scopri i segreti della cucina italiana e internazionale.',
-    lifestyle: 'Consigli di moda, arredamento e benessere per migliorare la vita quotidiana.',
+    'lifestyle-e-tempo-libero': 'Consigli di moda, arredamento, benessere e idee per il tempo libero per migliorare la vita quotidiana.',
     consigli: 'Suggerimenti pratici per migliorare la tua vita in tutti gli aspetti.'
   };
   return descriptions[slug] || 'Scopri le ultime novità, insights e innovazioni dal mondo di Sabadvance';

@@ -76,7 +76,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from('categories')
         .select('id, name, slug, description')
-        .not('slug', 'in', '(curiosita,cucina,lifestyle,consigli)')
+        .not('slug', 'in', '(curiosita,cucina,lifestyle-e-tempo-libero,consigli)')
         .order('name');
 
       if (error) {
@@ -172,7 +172,7 @@ const Index = () => {
             </Link>
 
             {/* Consigli di Lifestyle */}
-            <Link to="/blog?category=lifestyle" className="text-center group cursor-pointer">
+            <Link to="/blog?category=lifestyle-e-tempo-libero" className="text-center group cursor-pointer">
               <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
                 <Heart className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
               </div>
