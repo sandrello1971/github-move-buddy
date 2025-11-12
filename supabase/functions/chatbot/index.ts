@@ -56,19 +56,19 @@ serve(async (req) => {
             )
           `)
           .eq('status', 'published')
-          .order('published_at', { ascending: false })
-          .limit(10);
+          .order('published_at', { ascending: false });
 
         if (!error && posts) {
           blogContext = posts.map(post => ({
             title: post.title,
             excerpt: post.excerpt,
+            content: post.content?.substring(0, 500),
             categories: post.post_categories?.map(pc => pc.categories?.name).join(', ') || '',
             slug: post.slug
           }));
 
           contextText = blogContext.map(post => 
-            `Titolo: ${post.title}\nDescrizione: ${post.excerpt}\nCategorie: ${post.categories}\nSlug: ${post.slug}`
+            `Titolo: ${post.title}\nDescrizione: ${post.excerpt}\nContenuto: ${post.content}\nCategorie: ${post.categories}\nSlug: ${post.slug}`
           ).join('\n\n');
         }
       } catch (supabaseError) {
