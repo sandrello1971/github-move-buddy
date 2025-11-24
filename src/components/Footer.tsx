@@ -47,6 +47,9 @@ export function Footer() {
         </div>
         
         <div className="border-t border-background/20 mt-12 pt-8 text-center">
+          <p className="text-background/60 text-xs mb-4">
+            DISCLAIMER - Alcune immagini inserite in questa pagina sono tratte da Internet, e pertanto, sono state ritenute in buona fede di pubblico dominio. Qualora la loro pubblicazione violasse eventuali diritti d'autore, vogliate comunicarlo via e-mail (sabadvance@gmail.com) per provvedere alla conseguente rimozione o modifica.
+          </p>
           <p className="text-background/60">
             © {new Date().getFullYear()} Sabadvance. Tutti i diritti riservati.
           </p>
