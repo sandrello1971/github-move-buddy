@@ -2,3 +2,6 @@ project_id = "nzpawvhmjetdxcvvbwbi"
 
 [functions.og-meta]
 verify_jwt = false
+
+[functions.generate-og-page]
+verify_jwt = false

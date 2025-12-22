@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Facebook, Twitter, Link2, MessageCircle } from 'lucide-react';
+import { Facebook, Twitter, Link2, MessageCircle, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SocialShareProps {
   slug: string;
@@ -9,18 +11,48 @@ interface SocialShareProps {
 
 export function SocialShare({ slug, title }: SocialShareProps) {
   const { toast } = useToast();
+  const [ogPageUrl, setOgPageUrl] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   
-  // URL dell'edge function per i meta tag OG corretti
-  const ogMetaUrl = `https://nzpawvhmjetdxcvvbwbi.supabase.co/functions/v1/og-meta?slug=${slug}`;
+  // Generate OG page on mount
+  useEffect(() => {
+    generateOgPage();
+  }, [slug]);
+
+  const generateOgPage = async () => {
+    try {
+      setIsGenerating(true);
+      const { data, error } = await supabase.functions.invoke('generate-og-page', {
+        body: { slug }
+      });
+      
+      if (error) {
+        console.error('Error generating OG page:', error);
+        return;
+      }
+      
+      if (data?.url) {
+        setOgPageUrl(data.url);
+        console.log('OG page URL:', data.url);
+      }
+    } catch (error) {
+      console.error('Error calling generate-og-page:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Use storage URL if available, otherwise fallback to edge function
+  const shareUrl = ogPageUrl || `https://nzpawvhmjetdxcvvbwbi.supabase.co/functions/v1/og-meta?slug=${slug}`;
   
   const handleWhatsApp = () => {
-    const text = `${title} - ${ogMetaUrl}`;
+    const text = `${title} - ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const handleFacebook = () => {
     window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(ogMetaUrl)}`,
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
       '_blank',
       'width=600,height=400'
     );
@@ -29,7 +61,7 @@ export function SocialShare({ slug, title }: SocialShareProps) {
   const handleTwitter = () => {
     const text = title;
     window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(ogMetaUrl)}`,
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
       '_blank',
       'width=600,height=400'
     );
@@ -37,7 +69,7 @@ export function SocialShare({ slug, title }: SocialShareProps) {
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(ogMetaUrl);
+      await navigator.clipboard.writeText(shareUrl);
       toast({
         title: "Link copiato!",
         description: "Il link è stato copiato negli appunti",
@@ -53,11 +85,21 @@ export function SocialShare({ slug, title }: SocialShareProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground mr-1">Condividi:</span>
+      <span className="text-sm text-muted-foreground mr-1">
+        {isGenerating ? (
+          <span className="flex items-center gap-1">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Preparazione...
+          </span>
+        ) : (
+          'Condividi:'
+        )}
+      </span>
       <Button
         variant="outline"
         size="icon"
         onClick={handleWhatsApp}
+        disabled={isGenerating}
         className="h-8 w-8 hover:bg-green-500 hover:text-white hover:border-green-500 transition-colors"
         title="Condividi su WhatsApp"
       >
@@ -67,6 +109,7 @@ export function SocialShare({ slug, title }: SocialShareProps) {
         variant="outline"
         size="icon"
         onClick={handleFacebook}
+        disabled={isGenerating}
         className="h-8 w-8 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors"
         title="Condividi su Facebook"
       >
@@ -76,6 +119,7 @@ export function SocialShare({ slug, title }: SocialShareProps) {
         variant="outline"
         size="icon"
         onClick={handleTwitter}
+        disabled={isGenerating}
         className="h-8 w-8 hover:bg-black hover:text-white hover:border-black transition-colors"
         title="Condividi su X (Twitter)"
       >
@@ -85,6 +129,7 @@ export function SocialShare({ slug, title }: SocialShareProps) {
         variant="outline"
         size="icon"
         onClick={handleCopyLink}
+        disabled={isGenerating}
         className="h-8 w-8 hover:bg-primary hover:text-primary-foreground transition-colors"
         title="Copia link"
       >
