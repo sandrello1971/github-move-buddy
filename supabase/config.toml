@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.generate-og-page]
 verify_jwt = false
+
+[functions.generate-og-page-v2]
+verify_jwt = false
