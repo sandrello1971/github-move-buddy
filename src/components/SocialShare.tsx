@@ -27,7 +27,7 @@ export function SocialShare({ slug, title }: SocialShareProps) {
   const generateOgPage = async () => {
     try {
       setIsGenerating(true);
-      const { data, error } = await supabase.functions.invoke('generate-og-page', {
+      const { data, error } = await supabase.functions.invoke('generate-og-page-v2', {
         body: { slug },
       });
 
