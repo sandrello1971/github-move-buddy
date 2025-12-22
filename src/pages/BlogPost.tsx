@@ -215,7 +215,7 @@ export default function BlogPost() {
                     </div>
                   )}
                 </div>
-                <SocialShare slug={post.slug} title={post.title} />
+                <SocialShare slug={post.slug} title={post.title} shareVersion={post.updated_at || post.published_at} />
               </div>
             </header>
 

@@ -94,19 +94,15 @@ serve(async (req) => {
 </body>
 </html>`;
 
-    const headers = new Headers();
-    headers.set('access-control-allow-origin', '*');
-    headers.set('access-control-allow-headers', 'authorization, x-client-info, apikey, content-type');
-    headers.set('content-type', 'text/html; charset=utf-8');
-    headers.set('cache-control', 'public, max-age=3600');
-    // Avoid Edge Runtime default CSP sandboxing from breaking redirects / link navigation
-    headers.set(
-      'content-security-policy',
-      "default-src 'none'; img-src https: data:; style-src 'unsafe-inline'; script-src 'unsafe-inline';"
-    );
-
-    const body = new TextEncoder().encode(html);
-    return new Response(body, { headers });
+    // IMPORTANT: return a string body + explicit Content-Type.
+    // Some clients (and crawlers) will ignore OG tags if served as text/plain.
+    return new Response(html, {
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600',
+      },
+    });
   } catch (error) {
     console.error('Error:', error);
     return new Response(
