@@ -13,38 +13,52 @@ export function SocialShare({ slug, title }: SocialShareProps) {
   const { toast } = useToast();
   const [ogPageUrl, setOgPageUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  
+
+  const storageOgUrl = `https://nzpawvhmjetdxcvvbwbi.supabase.co/storage/v1/object/public/og-pages/${slug}.html`;
+
   // Generate OG page on mount
   useEffect(() => {
+    // Use deterministic Storage URL immediately; generation just ensures the file exists/updates.
+    setOgPageUrl(storageOgUrl);
     generateOgPage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   const generateOgPage = async () => {
     try {
       setIsGenerating(true);
       const { data, error } = await supabase.functions.invoke('generate-og-page', {
-        body: { slug }
+        body: { slug },
       });
-      
+
       if (error) {
         console.error('Error generating OG page:', error);
+        toast({
+          title: 'Errore',
+          description: 'Impossibile preparare l’anteprima per la condivisione.',
+          variant: 'destructive',
+        });
         return;
       }
-      
+
       if (data?.url) {
         setOgPageUrl(data.url);
         console.log('OG page URL:', data.url);
       }
     } catch (error) {
       console.error('Error calling generate-og-page:', error);
+      toast({
+        title: 'Errore',
+        description: 'Impossibile preparare l’anteprima per la condivisione.',
+        variant: 'destructive',
+      });
     } finally {
       setIsGenerating(false);
     }
   };
 
-  // Use storage URL if available, otherwise fallback to edge function
-  const shareUrl = ogPageUrl || `https://nzpawvhmjetdxcvvbwbi.supabase.co/functions/v1/og-meta?slug=${slug}`;
-  
+  // Always prefer the Storage OG page (WhatsApp reads OG tags from HTML served as text/html)
+  const shareUrl = ogPageUrl || storageOgUrl;
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');

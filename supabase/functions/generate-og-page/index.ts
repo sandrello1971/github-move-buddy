@@ -4,6 +4,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 serve(async (req) => {
@@ -101,11 +102,24 @@ serve(async (req) => {
 
     // Upload to storage bucket
     const fileName = `${slug}.html`;
+
+    // Best-effort remove to ensure metadata (content-type) gets refreshed
+    const { error: removeError } = await supabase.storage
+      .from('og-pages')
+      .remove([fileName]);
+
+    if (removeError) {
+      console.warn('Remove existing OG page failed (ignored):', removeError);
+    }
+
+    const htmlBytes = new TextEncoder().encode(html);
+
     const { error: uploadError } = await supabase.storage
       .from('og-pages')
-      .upload(fileName, html, {
-        contentType: 'text/html',
-        upsert: true
+      .upload(fileName, htmlBytes, {
+        contentType: 'text/html; charset=utf-8',
+        cacheControl: '3600',
+        upsert: true,
       });
 
     if (uploadError) {
