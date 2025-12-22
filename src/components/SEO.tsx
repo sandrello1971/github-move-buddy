@@ -75,7 +75,7 @@ export const SEO = ({
       <meta property="og:description" content={description} />
       <meta property="og:type" content={ogType} />
       <meta property="og:url" content={fullCanonical || siteUrl} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={ogImage || "https://sabadvance.it/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png"} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content="Sabadvance" />
@@ -102,7 +102,7 @@ export const SEO = ({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={ogImage || "https://sabadvance.it/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png"} />
       <meta name="twitter:site" content="@sabadvance" />
       
       {/* Additional Meta Tags */}

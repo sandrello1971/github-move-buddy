@@ -202,14 +202,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_today_visits: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      get_total_visits: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      get_today_visits: { Args: never; Returns: number }
+      get_total_visits: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
