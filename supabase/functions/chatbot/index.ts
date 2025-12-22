@@ -17,8 +17,18 @@ serve(async (req) => {
   try {
     const { message } = await req.json();
 
-    if (!message) {
-      throw new Error('Message is required');
+    // Input validation: message is required, must be string, max 500 chars
+    if (!message || typeof message !== 'string') {
+      throw new Error('Message is required and must be a string');
+    }
+    
+    const trimmedMessage = message.trim();
+    if (trimmedMessage.length === 0) {
+      throw new Error('Message cannot be empty');
+    }
+    
+    if (trimmedMessage.length > 500) {
+      throw new Error('Message must be 500 characters or less');
     }
 
     // Controllo della chiave API OpenAI
@@ -120,7 +130,7 @@ IMPORTANTE: Rifiuta educatamente qualsiasi domanda non correlata ai contenuti de
           },
           {
             role: 'user',
-            content: message
+            content: trimmedMessage
           }
         ],
         max_tokens: 300,
