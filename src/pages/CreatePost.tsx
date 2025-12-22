@@ -15,6 +15,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
+
+const postSchema = z.object({
+  title: z.string().trim().min(1, 'Il titolo è obbligatorio').max(200, 'Il titolo deve essere massimo 200 caratteri'),
+  content: z.string().min(10, 'Il contenuto deve avere almeno 10 caratteri').max(100000, 'Il contenuto è troppo lungo'),
+  excerpt: z.string().max(500, 'L\'estratto deve essere massimo 500 caratteri').optional().or(z.literal('')),
+  slug: z.string().regex(/^[a-z0-9-]+$/, 'Slug non valido').max(100, 'Lo slug è troppo lungo'),
+});
 
 interface Category {
   id: string;
@@ -80,6 +88,26 @@ const CreatePost = () => {
     setLoading(true);
     try {
       const slug = generateSlug(title);
+      
+      // Validate input with zod schema
+      const validationResult = postSchema.safeParse({
+        title: title.trim(),
+        content,
+        excerpt: excerpt.trim(),
+        slug,
+      });
+
+      if (!validationResult.success) {
+        const firstError = validationResult.error.errors[0];
+        toast({
+          title: "Errore di validazione",
+          description: firstError.message,
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       const publishedAt = status === 'published' 
         ? (publishedDate ? publishedDate.toISOString() : new Date().toISOString())
         : null;
@@ -87,10 +115,10 @@ const CreatePost = () => {
       const { data: newPost, error } = await supabase
         .from('posts')
         .insert({
-          title,
-          slug,
-          content,
-          excerpt,
+          title: validationResult.data.title,
+          slug: validationResult.data.slug,
+          content: validationResult.data.content,
+          excerpt: validationResult.data.excerpt || null,
           featured_image: featuredImage || null,
           author_id: user.id,
           status,

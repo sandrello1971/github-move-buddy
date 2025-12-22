@@ -15,6 +15,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save, Eye, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
+
+const postSchema = z.object({
+  title: z.string().trim().min(1, 'Il titolo è obbligatorio').max(200, 'Il titolo deve essere massimo 200 caratteri'),
+  content: z.string().min(10, 'Il contenuto deve avere almeno 10 caratteri').max(100000, 'Il contenuto è troppo lungo'),
+  excerpt: z.string().max(500, 'L\'estratto deve essere massimo 500 caratteri').optional().or(z.literal('')),
+  slug: z.string().regex(/^[a-z0-9-]+$/, 'Slug non valido').max(100, 'Lo slug è troppo lungo'),
+});
 import {
   AlertDialog,
   AlertDialogAction,
@@ -163,6 +171,26 @@ const EditPost = () => {
     setLoading(true);
     try {
       const slug = generateSlug(title);
+      
+      // Validate input with zod schema
+      const validationResult = postSchema.safeParse({
+        title: title.trim(),
+        content,
+        excerpt: excerpt.trim(),
+        slug,
+      });
+
+      if (!validationResult.success) {
+        const firstError = validationResult.error.errors[0];
+        toast({
+          title: "Errore di validazione",
+          description: firstError.message,
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       const wasPublished = post.status === 'published';
       const isBeingPublished = status === 'published';
       const publishedAt = isBeingPublished 
@@ -173,10 +201,10 @@ const EditPost = () => {
       const { error: updateError } = await supabase
         .from('posts')
         .update({
-          title,
-          slug,
-          content,
-          excerpt,
+          title: validationResult.data.title,
+          slug: validationResult.data.slug,
+          content: validationResult.data.content,
+          excerpt: validationResult.data.excerpt || null,
           featured_image: featuredImage || null,
           status,
           published_at: publishedAt,
