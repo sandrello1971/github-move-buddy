@@ -153,7 +153,7 @@ export default function BlogPost() {
         description={post.excerpt || `${post.title} - Leggi l'articolo completo su Sabadvance`}
         canonical={`/blog/${post.slug}`}
         ogType="article"
-        ogImage={post.featured_image}
+        ogImage={post.featured_image || "https://sabadvance.it/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png"}
         publishedTime={post.published_at}
         modifiedTime={post.updated_at || post.published_at}
         author={authorName}
