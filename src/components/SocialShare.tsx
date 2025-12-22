@@ -5,13 +5,18 @@ import { Facebook, Twitter, Link2, MessageCircle } from 'lucide-react';
 interface SocialShareProps {
   slug: string;
   title: string;
+  /**
+   * Versione per bustare la cache delle preview (es. updated_at o published_at).
+   * Cambiandola, WhatsApp è più propenso a rigenerare l’anteprima.
+   */
+  shareVersion?: string;
 }
 
-export function SocialShare({ slug, title }: SocialShareProps) {
+export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // Use edge function URL directly - it serves HTML with correct Content-Type
-  const shareUrl = `https://nzpawvhmjetdxcvvbwbi.supabase.co/functions/v1/og-meta?slug=${encodeURIComponent(slug)}`;
+  // Condivisione via endpoint su sabadvance.it (necessario per avere Content-Type: text/html, che WhatsApp richiede)
+  const shareUrl = `https://sabadvance.it/share/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
 
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;
