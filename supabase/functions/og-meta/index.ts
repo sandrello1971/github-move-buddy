@@ -45,17 +45,27 @@ serve(async (req) => {
     const ogImage = post.featured_image || `${siteUrl}/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png`;
     const description = post.excerpt || `${post.title} - Leggi l'articolo completo su Sabadvance`;
 
+    // Escape HTML entities to prevent XSS
+    const escapeHtml = (str: string) => str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    const safeTitle = escapeHtml(post.title);
+    const safeDescription = escapeHtml(description);
+
     const html = `<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${post.title} | Sabadvance</title>
-  <meta name="description" content="${description}">
+  <title>${safeTitle} | Sabadvance</title>
+  <meta name="description" content="${safeDescription}">
   
   <!-- Open Graph -->
-  <meta property="og:title" content="${post.title} | Sabadvance">
-  <meta property="og:description" content="${description}">
+  <meta property="og:title" content="${safeTitle} | Sabadvance">
+  <meta property="og:description" content="${safeDescription}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="${postUrl}">
   <meta property="og:image" content="${ogImage}">
@@ -67,8 +77,8 @@ serve(async (req) => {
   
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="${post.title} | Sabadvance">
-  <meta name="twitter:description" content="${description}">
+  <meta name="twitter:title" content="${safeTitle} | Sabadvance">
+  <meta name="twitter:description" content="${safeDescription}">
   <meta name="twitter:image" content="${ogImage}">
   <meta name="twitter:site" content="@sabadvance">
   
@@ -76,18 +86,21 @@ serve(async (req) => {
   
   <!-- Redirect to actual page -->
   <meta http-equiv="refresh" content="0;url=${postUrl}">
+  <script>window.location.replace("${postUrl}");</script>
 </head>
-<body>
-  <p>Redirecting to <a href="${postUrl}">${post.title}</a>...</p>
+<body style="font-family: sans-serif; text-align: center; padding: 50px;">
+  <p>Reindirizzamento in corso...</p>
+  <p><a href="${postUrl}">Clicca qui se non vieni reindirizzato automaticamente</a></p>
 </body>
 </html>`;
 
-    return new Response(html, {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'text/html; charset=utf-8',
-      },
-    });
+    const headers = new Headers();
+    headers.set('Access-Control-Allow-Origin', '*');
+    headers.set('Access-Control-Allow-Headers', 'authorization, x-client-info, apikey, content-type');
+    headers.set('Content-Type', 'text/html; charset=utf-8');
+    headers.set('Cache-Control', 'public, max-age=3600');
+    
+    return new Response(html, { headers });
   } catch (error) {
     console.error('Error:', error);
     return new Response(
