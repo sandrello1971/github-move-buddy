@@ -73,7 +73,7 @@ serve(async (req) => {
             title: post.title,
             excerpt: post.excerpt,
             content: post.content?.substring(0, 500),
-            categories: post.post_categories?.map(pc => pc.categories?.name).join(', ') || '',
+            categories: post.post_categories?.map((pc: { categories: { name: string; slug: string } | null }) => pc.categories?.name).filter(Boolean).join(', ') || '',
             slug: post.slug
           }));
 
@@ -160,8 +160,8 @@ IMPORTANTE: Rifiuta educatamente qualsiasi domanda non correlata ai contenuti de
     return new Response(
       JSON.stringify({ 
         message: fallbackMessage,
-        error: error.message 
-      }), 
+        error: error instanceof Error ? error.message : 'Unknown error'
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
