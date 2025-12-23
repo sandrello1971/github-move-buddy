@@ -13,9 +13,10 @@ This project is configured to work with Cloudflare Pages to provide proper Open 
 
 2. **Environment Variables**:
    Set these in your Cloudflare Pages project settings:
-   - `VITE_SUPABASE_URL`: Your Supabase project URL
-   - `VITE_SUPABASE_PUBLISHABLE_KEY`: Your Supabase anonymous/public key
-   - `VITE_SUPABASE_PROJECT_ID`: Your Supabase project ID
+   - `VITE_SUPABASE_URL`: Your Supabase project URL (required)
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`: Your Supabase anonymous/public key (required)
+   - `VITE_SUPABASE_PROJECT_ID`: Your Supabase project ID (required)
+   - `VITE_SITE_URL`: Your site's public URL (optional, defaults to https://sabadvance.it)
 
    These values are available in your `.env` file locally.
 

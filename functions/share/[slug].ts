@@ -4,6 +4,7 @@
 interface Env {
   VITE_SUPABASE_URL: string;
   VITE_SUPABASE_PUBLISHABLE_KEY: string;
+  VITE_SITE_URL?: string; // Optional: defaults to production URL
 }
 
 interface Post {
@@ -27,8 +28,11 @@ export async function onRequest(context: {
   }
 
   // Get site URL from environment or use production default
-  const siteUrl = 'https://sabadvance.it';
+  const siteUrl = env.VITE_SITE_URL || 'https://sabadvance.it';
   const postUrl = `${siteUrl}/blog/${slug}`;
+  
+  // Default OG image
+  const defaultOgImage = `${siteUrl}/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png`;
 
   // Get Supabase configuration from environment
   const supabaseUrl = env.VITE_SUPABASE_URL;
@@ -65,7 +69,7 @@ export async function onRequest(context: {
       return new Response('Post not found', { status: 404 });
     }
 
-    const ogImage = post.featured_image || `${siteUrl}/lovable-uploads/9afc0cc7-085e-45e9-8a5d-eaccf88663b6.png`;
+    const ogImage = post.featured_image || defaultOgImage;
     const description = post.excerpt || `${post.title} - Leggi l'articolo completo su Sabadvance`;
 
     // Escape HTML to prevent XSS
