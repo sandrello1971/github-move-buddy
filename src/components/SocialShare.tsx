@@ -15,8 +15,10 @@ interface SocialShareProps {
 export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // Condivisione via endpoint su sabadvance.it (necessario per avere Content-Type: text/html, che WhatsApp richiede)
-  const shareUrl = `https://sabadvance.it/share/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
+  // Condivisione via Supabase Edge Function per avere Content-Type: text/html con i meta tag OG corretti
+  // Questo funziona con Lovable.dev e non richiede Cloudflare Pages
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://nzpawvhmjetdxcvvbwbi.supabase.co';
+  const shareUrl = `${supabaseUrl}/functions/v1/og-meta?slug=${encodeURIComponent(slug)}${shareVersion ? `&v=${encodeURIComponent(shareVersion)}` : ''}`;
 
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;
