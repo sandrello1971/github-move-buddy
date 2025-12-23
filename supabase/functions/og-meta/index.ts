@@ -94,9 +94,12 @@ serve(async (req) => {
 </body>
 </html>`;
 
-    // IMPORTANT: return a string body + explicit Content-Type.
-    // Some clients (and crawlers) will ignore OG tags if served as text/plain.
-    return new Response(html, {
+    // IMPORTANT: Explicitly encode as UTF-8 bytes and set Content-Type to ensure proper rendering
+    // TextEncoder() defaults to UTF-8, matching the charset in Content-Type header
+    // Some clients (and crawlers) will ignore OG tags if served as text/plain or with wrong encoding
+    const htmlBytes = new TextEncoder().encode(html);
+    
+    return new Response(htmlBytes, {
       headers: {
         ...corsHeaders,
         'Content-Type': 'text/html; charset=utf-8',
