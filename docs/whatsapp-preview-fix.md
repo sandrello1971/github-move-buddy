@@ -81,6 +81,21 @@ If the preview doesn't update after changes:
 - `public/_redirects` - Routing configuration for SPA fallback
 - `public/_headers` - Caching headers configuration
 
+## Recent Fixes (December 2024)
+
+### HTML Code Display Issue
+**Problem**: When sharing links on social media, the page was showing raw HTML code instead of rendering properly.
+
+**Root Cause**: The Supabase Edge Function (`og-meta`) was returning HTML as a string, which some clients/proxies were interpreting as plain text instead of HTML content.
+
+**Solution**: Modified the Edge Function to explicitly encode the HTML string as bytes using `TextEncoder()` before returning the response. This ensures:
+- The Content-Type header is properly respected by all clients
+- The response body is correctly interpreted as binary data representing UTF-8 encoded HTML
+- Social media crawlers render the HTML instead of displaying raw code
+
+**Files Changed**:
+- `supabase/functions/og-meta/index.ts` - Added explicit byte encoding of HTML response
+
 ## Alternative Solutions (Not Implemented)
 
 Other approaches that could work but were not chosen:

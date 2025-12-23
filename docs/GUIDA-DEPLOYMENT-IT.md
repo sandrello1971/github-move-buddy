@@ -75,6 +75,16 @@ Sostituisci `SLUG_ARTICOLO` con lo slug di un articolo pubblicato.
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY`
 
+### Problema: Viene mostrato il codice HTML invece dell'anteprima
+
+**Causa**: La risposta della Supabase Edge Function non veniva interpretata correttamente come HTML.
+
+**Soluzione**:
+Questo problema è stato risolto (Dicembre 2024) modificando la function `og-meta` per codificare esplicitamente la risposta HTML come bytes. Se continui a vedere questo problema:
+1. Verifica che la function `og-meta` sia aggiornata all'ultima versione
+2. Rideploya la function in Supabase Dashboard
+3. Pulisci la cache di WhatsApp/Facebook usando il parametro `v=` o il Facebook Debugger
+
 ### Problema: Anteprima generica invece di quella dell'articolo
 
 **Causa**: WhatsApp potrebbe aver cached-ato una versione precedente.
