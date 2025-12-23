@@ -15,8 +15,11 @@ interface SocialShareProps {
 export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // Condivisione via endpoint su sabadvance.it (necessario per avere Content-Type: text/html, che WhatsApp richiede)
-  const shareUrl = `https://sabadvance.it/share/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
+  // TEMPORANEO: Usa direttamente l'URL del blog per evitare 404
+  // Questo funzionerà immediatamente, anche se i meta tag OG non saranno ottimali per i crawler
+  // TODO: Dopo aver verificato che la Supabase Edge Function og-meta funziona correttamente,
+  // cambiare questo URL a: `${supabaseUrl}/functions/v1/og-meta?slug=${slug}&v=${shareVersion}`
+  const shareUrl = `https://sabadvance.it/blog/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
 
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;

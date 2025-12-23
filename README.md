@@ -59,6 +59,8 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase (Backend & Database)
+- Cloudflare Pages Functions (for social media previews)
 
 ## How can I deploy this project?
 
@@ -71,3 +73,14 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Social Media Link Previews
+
+This project includes support for proper link previews on WhatsApp, Facebook, and other social media platforms.
+
+When sharing article links, the system uses a `/share/:slug` URL pattern that serves proper Open Graph meta tags to social media crawlers while redirecting users to the actual article.
+
+For more information, see:
+- [WhatsApp Preview Fix Documentation](docs/whatsapp-preview-fix.md)
+- [Deployment Guide](docs/deployment.md)
+- [Testing Guide](docs/testing-share-functionality.md)
