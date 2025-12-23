@@ -94,7 +94,8 @@ serve(async (req) => {
 </body>
 </html>`;
 
-    // IMPORTANT: Explicitly encode as bytes and set Content-Type to ensure proper rendering
+    // IMPORTANT: Explicitly encode as UTF-8 bytes and set Content-Type to ensure proper rendering
+    // TextEncoder() defaults to UTF-8, matching the charset in Content-Type header
     // Some clients (and crawlers) will ignore OG tags if served as text/plain or with wrong encoding
     const htmlBytes = new TextEncoder().encode(html);
     

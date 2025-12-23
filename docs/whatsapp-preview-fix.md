@@ -88,9 +88,9 @@ If the preview doesn't update after changes:
 
 **Root Cause**: The Supabase Edge Function (`og-meta`) was returning HTML as a string, which some clients/proxies were interpreting as plain text instead of HTML content.
 
-**Solution**: Modified the Edge Function to explicitly encode the HTML string as bytes using `TextEncoder()` before returning the response. This ensures:
+**Solution**: Modified the Edge Function to explicitly encode the HTML string as a byte array using `TextEncoder()` before returning the response. This ensures:
 - The Content-Type header is properly respected by all clients
-- The response body is correctly interpreted as binary data representing UTF-8 encoded HTML
+- The response body is correctly interpreted as a byte array representing UTF-8 encoded HTML
 - Social media crawlers render the HTML instead of displaying raw code
 
 **Files Changed**:
