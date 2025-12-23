@@ -15,10 +15,11 @@ interface SocialShareProps {
 export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // Condivisione via Supabase Edge Function per avere Content-Type: text/html con i meta tag OG corretti
-  // Questo funziona con Lovable.dev e non richiede Cloudflare Pages
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://nzpawvhmjetdxcvvbwbi.supabase.co';
-  const shareUrl = `${supabaseUrl}/functions/v1/og-meta?slug=${encodeURIComponent(slug)}${shareVersion ? `&v=${encodeURIComponent(shareVersion)}` : ''}`;
+  // TEMPORANEO: Usa direttamente l'URL del blog per evitare 404
+  // Questo funzionerà immediatamente, anche se i meta tag OG non saranno ottimali per i crawler
+  // TODO: Dopo aver verificato che la Supabase Edge Function og-meta funziona correttamente,
+  // cambiare questo URL a: `${supabaseUrl}/functions/v1/og-meta?slug=${slug}&v=${shareVersion}`
+  const shareUrl = `https://sabadvance.it/blog/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
 
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;
