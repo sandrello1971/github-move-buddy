@@ -15,13 +15,11 @@ interface SocialShareProps {
 export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // Usa la variabile d'ambiente per l'URL di Supabase
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  
-  // Usa la Supabase Edge Function og-meta per generare i meta tag OG corretti
-  // Questa URL restituisce HTML con i meta tag appropriati per i crawler dei social media
-  // e reindirizza automaticamente gli utenti alla pagina dell'articolo
-  const shareUrl = `${supabaseUrl}/functions/v1/og-meta?slug=${encodeURIComponent(slug)}${shareVersion ? `&v=${encodeURIComponent(shareVersion)}` : ''}`;
+  // Usa il dominio principale per la condivisione (Cloudflare Pages Function)
+  // Questo endpoint /share/{slug} restituisce HTML con i meta tag OG corretti
+  // per i crawler dei social media e reindirizza gli utenti alla pagina dell'articolo
+  const siteUrl = import.meta.env.VITE_SITE_URL || 'https://sabadvance.it';
+  const shareUrl = `${siteUrl}/share/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
 
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;
