@@ -1,7 +1,11 @@
 # Redirects and rewrites for Cloudflare Pages / Netlify
 
 # Social share routes - these are handled by Cloudflare Pages Functions
-# No redirect needed here as Functions take precedence
+# IMPORTANT: Do NOT redirect /share/* to index.html - let Functions handle it
+# Functions take precedence in Cloudflare Pages, but we need to ensure
+# the catch-all rule below doesn't interfere
 
-# SPA fallback - serve index.html for all other routes
+# SPA fallback - serve index.html for all other routes EXCEPT /share/*
+# Note: In Cloudflare Pages, Functions at /functions/share/[slug].ts
+# automatically handle /share/:slug routes, so this redirect won't affect them
 /*    /index.html   200
