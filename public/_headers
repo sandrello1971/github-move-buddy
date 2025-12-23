@@ -1,0 +1,17 @@
+# Headers for Cloudflare Pages / Netlify
+
+# Cache static assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Cache images
+/lovable-uploads/*
+  Cache-Control: public, max-age=31536000
+
+# Don't cache the main HTML file
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Share pages should be cached but can be revalidated
+/share/*
+  Cache-Control: public, max-age=3600, must-revalidate

@@ -1,0 +1,7 @@
+# Redirects and rewrites for Cloudflare Pages / Netlify
+
+# Social share routes - these are handled by Cloudflare Pages Functions
+# No redirect needed here as Functions take precedence
+
+# SPA fallback - serve index.html for all other routes
+/*    /index.html   200
