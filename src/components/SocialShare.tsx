@@ -1,14 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Facebook, Twitter, Link2, MessageCircle } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface SocialShareProps {
   slug: string;
   title: string;
   /**
    * Versione per bustare la cache delle preview (es. updated_at o published_at).
-   * Cambiandola, WhatsApp è più propenso a rigenerare l’anteprima.
+   * Cambiandola, WhatsApp è più propenso a rigenerare l'anteprima.
    */
   shareVersion?: string;
 }
@@ -16,8 +15,8 @@ interface SocialShareProps {
 export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // Ottieni l'URL di Supabase dal client configurato
-  const supabaseUrl = supabase.supabaseUrl;
+  // Usa la variabile d'ambiente per l'URL di Supabase
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   
   // Usa la Supabase Edge Function og-meta per generare i meta tag OG corretti
   // Questa URL restituisce HTML con i meta tag appropriati per i crawler dei social media
