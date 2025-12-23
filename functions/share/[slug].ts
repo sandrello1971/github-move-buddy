@@ -26,12 +26,18 @@ export async function onRequest(context: {
     return new Response('Missing slug', { status: 400 });
   }
 
+  // Get site URL from environment or use production default
   const siteUrl = 'https://sabadvance.it';
   const postUrl = `${siteUrl}/blog/${slug}`;
 
   // Get Supabase configuration from environment
-  const supabaseUrl = env.VITE_SUPABASE_URL || 'https://nzpawvhmjetdxcvvbwbi.supabase.co';
-  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+  const supabaseUrl = env.VITE_SUPABASE_URL;
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('Missing Supabase configuration');
+    return new Response('Server configuration error', { status: 500 });
+  }
 
   try {
     // REST query: fetch published posts
@@ -68,10 +74,23 @@ export async function onRequest(context: {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+
+    // Escape for use in JavaScript strings
+    const escapeJs = (str: string) =>
+      str
+        .replace(/\\/g, '\\\\')
+        .replace(/"/g, '\\"')
+        .replace(/'/g, "\\'")
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/</g, '\\x3C')
+        .replace(/>/g, '\\x3E');
 
     const safeTitle = escapeHtml(post.title);
     const safeDescription = escapeHtml(description);
+    const safePostUrlJs = escapeJs(postUrl);
 
     const html = `<!doctype html>
 <html lang="it">
@@ -103,7 +122,7 @@ export async function onRequest(context: {
 
   <!-- Redirect to actual article page -->
   <meta http-equiv="refresh" content="0;url=${postUrl}" />
-  <script>window.location.replace("${postUrl}");</script>
+  <script>window.location.replace("${safePostUrlJs}");</script>
 </head>
 <body style="font-family: sans-serif; text-align: center; padding: 50px; color: #333;">
   <h1>Reindirizzamento in corso...</h1>
