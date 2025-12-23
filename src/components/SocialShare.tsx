@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Facebook, Twitter, Link2, MessageCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SocialShareProps {
   slug: string;
@@ -15,11 +16,13 @@ interface SocialShareProps {
 export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // TEMPORANEO: Usa direttamente l'URL del blog per evitare 404
-  // Questo funzionerà immediatamente, anche se i meta tag OG non saranno ottimali per i crawler
-  // TODO: Dopo aver verificato che la Supabase Edge Function og-meta funziona correttamente,
-  // cambiare questo URL a: `${supabaseUrl}/functions/v1/og-meta?slug=${slug}&v=${shareVersion}`
-  const shareUrl = `https://sabadvance.it/blog/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
+  // Ottieni l'URL di Supabase dal client configurato
+  const supabaseUrl = supabase.supabaseUrl;
+  
+  // Usa la Supabase Edge Function og-meta per generare i meta tag OG corretti
+  // Questa URL restituisce HTML con i meta tag appropriati per i crawler dei social media
+  // e reindirizza automaticamente gli utenti alla pagina dell'articolo
+  const shareUrl = `${supabaseUrl}/functions/v1/og-meta?slug=${encodeURIComponent(slug)}${shareVersion ? `&v=${encodeURIComponent(shareVersion)}` : ''}`;
 
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;
