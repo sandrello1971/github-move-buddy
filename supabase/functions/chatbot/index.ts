@@ -69,11 +69,11 @@ serve(async (req) => {
           .order('published_at', { ascending: false });
 
         if (!error && posts) {
-          blogContext = posts.map(post => ({
+        blogContext = posts.map(post => ({
             title: post.title,
             excerpt: post.excerpt,
             content: post.content?.substring(0, 500),
-            categories: post.post_categories?.map((pc: { categories: { name: string; slug: string } | null }) => pc.categories?.name).filter(Boolean).join(', ') || '',
+            categories: (post.post_categories as { categories: { name: string; slug: string } | null }[] | null)?.map(pc => pc.categories?.name).filter(Boolean).join(', ') || '',
             slug: post.slug
           }));
 
