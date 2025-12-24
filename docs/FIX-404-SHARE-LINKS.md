@@ -4,32 +4,84 @@
 Il link `https://sabadvance.it/share/bruce?v=2025-12-22T11:45:52.722201+00:00` restituisce un errore 404.
 
 ## Causa
-Il sito usa Cloudflare Pages Functions per gestire i link di condivisione (`/share/:slug`), ma il file di configurazione routing `_routes.json` era mancante. Questo causava il redirect di tutti i percorsi, incluso `/share/*`, all'applicazione React SPA, che non ha una route per `/share/*`.
+Il link di condivisione `/share/:slug` restituisce un errore 404. Questo può accadere per diversi motivi:
 
-## Soluzione Implementata
+1. **Il sito non è deployato su Cloudflare Pages**: Le Cloudflare Pages Functions funzionano SOLO su Cloudflare Pages, non su altri servizi di hosting.
+2. **La directory `/functions` non viene deployata**: La build potrebbe non includere la directory delle Functions.
+3. **Configurazione di deployment errata**: Le variabili d'ambiente o il comando di build potrebbero essere configurati male.
 
-### 1. Aggiunto File `_routes.json`
-Creato il file `/public/_routes.json` per dire esplicitamente a Cloudflare Pages quali route devono essere gestite dalle Functions:
+## Prerequisiti
+
+**IMPORTANTE**: Questa soluzione funziona SOLO se il sito è deployato su **Cloudflare Pages**. Se il sito è su:
+- Lovable.dev
+- Netlify  
+- Vercel
+- Altri servizi
+
+Le Cloudflare Pages Functions NON funzioneranno. In quel caso, usa invece la Supabase Edge Function (vedi `GUIDA-DEPLOYMENT-IT.md`).
+
+## Verifica Deployment Cloudflare Pages
+
+Prima di tutto, verifica che il sito sia su Cloudflare Pages:
+
+1. Vai al dashboard di Cloudflare Pages: https://dash.cloudflare.com/
+2. Controlla se il progetto `sabadvance` esiste
+3. Vai su Functions nella sidebar
+4. Verifica che la Function `share/[slug]` sia listata
+
+Se il progetto non esiste o le Functions non sono visibili, devi prima deployare il sito su Cloudflare Pages.
+
+## Soluzione
+
+### 1. Configurazione `_routes.json` (CORRETTA)
+Il file `/public/_routes.json` deve avere questa configurazione:
 
 ```json
 {
   "version": 1,
-  "include": [
-    "/share/*"
-  ],
+  "include": ["/share/*"],
   "exclude": []
 }
 ```
 
 Questo garantisce che:
-- Le richieste a `/share/*` vengano gestite dalla Function in `/functions/share/[slug].ts`
-- Tutte le altre richieste vengano gestite dal React SPA
+- Solo le richieste a `/share/*` vengono gestite dalla Function in `/functions/share/[slug].ts`
+- Tutti gli altri percorsi usano il routing SPA standard (servendo `index.html` tramite `_redirects`)
 
-### 2. Aggiornato `.gitignore`
-Aggiunto `.wrangler/` ai file ignorati da git (è una directory di build creata da wrangler per i test locali).
+### 2. Verifica Build e Deployment
 
-### 3. Installato Wrangler
-Aggiunto `wrangler` come dipendenza di sviluppo per permettere il test locale delle Functions.
+#### Verifica che la directory `/functions` venga deployata:
+
+Quando esegui il build del progetto:
+```bash
+npm run build
+```
+
+Assicurati che:
+1. La directory `dist/` viene creata
+2. La directory `functions/` esiste nella root del progetto (NON in `dist/`)
+
+**IMPORTANTE**: Su Cloudflare Pages, la directory `/functions` deve essere presente nella root del repository, NON nella directory di build `dist/`. Cloudflare la deployta automaticamente insieme al sito statico.
+
+#### Configurazione Build su Cloudflare Pages:
+
+Nel dashboard di Cloudflare Pages, verifica che il Build sia configurato così:
+
+- **Build command**: `npm run build`
+- **Build output directory**: `dist`
+- **Root directory**: `/` (default)
+
+La directory `/functions` viene automaticamente rilevata da Cloudflare Pages se è nella root del progetto.
+
+### 3. Verifica Variabili d'Ambiente
+
+Nel dashboard di Cloudflare Pages → Settings → Environment variables, assicurati che siano configurate:
+
+- `VITE_SUPABASE_URL`: `https://nzpawvhmjetdxcvvbwbi.supabase.co`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`: (la tua chiave pubblica Supabase)
+- `VITE_SITE_URL`: `https://sabadvance.it` (opzionale)
+
+Queste variabili sono necessarie perché la Function le usa per connettersi a Supabase e recuperare i dati del post.
 
 ## Verifica della Soluzione
 
@@ -140,12 +192,43 @@ WhatsApp e Facebook cachano le anteprime. Per forzare l'aggiornamento:
    - Dashboard → Functions → Logs
    - Cerca il messaggio di errore specifico
 
-## File Modificati
+## File Modificati/Verificati
 
-- `/public/_routes.json` - NUOVO: Configurazione routing Cloudflare Pages
-- `/public/_redirects` - AGGIORNATO: Commenti migliorati
-- `/.gitignore` - AGGIORNATO: Aggiunto `.wrangler/`
-- `/package.json` - AGGIORNATO: Aggiunto `wrangler` come dev dependency
+- `/public/_routes.json` - CONFIGURAZIONE CORRETTA: Solo `/share/*` deve invocare Functions
+- `/functions/share/[slug].ts` - Function per gestire i link di condivisione
+- `/public/_redirects` - Gestisce il fallback SPA per tutti gli altri percorsi
+- `/docs/FIX-404-SHARE-LINKS.md` - Questa guida
+
+## Note Importanti sulla Configurazione
+
+### Perché `include: ["/share/*"]` è la configurazione corretta
+
+La configurazione `_routes.json` con `include: ["/share/*"]` è l'approccio corretto per un SPA con Functions specifiche perché:
+
+1. **Solo i percorsi specificati invocano Functions** - Riduce i costi e migliora le performance
+2. **Gli altri percorsi usano il routing SPA** - Cloudflare automaticamente serve `index.html` per percorsi sconosciuti (grazie a `_redirects`)
+3. **I file statici vengono serviti direttamente** - CSS, JS, immagini non passano attraverso le Functions
+
+### NON usare `include: ["/*"]`
+
+La configurazione `include: ["/*"]` NON è raccomandata per questo progetto perché:
+- Fa sì che OGNI richiesta provi a invocare una Function
+- Aumenta i costi e riduce le performance
+- Non è necessaria per il routing SPA (funziona automaticamente con `_redirects`)
+
+### Struttura del Progetto per Cloudflare Pages
+
+```
+/
+├── functions/           ← Cloudflare deploya questa directory automaticamente
+│   └── share/
+│       └── [slug].ts   ← Gestisce /share/:slug
+├── public/
+│   ├── _routes.json    ← Controlla quale percorso invoca le Functions
+│   └── _redirects      ← Fallback SPA (/* → /index.html)
+├── src/                ← Codice React
+└── dist/               ← Build output (deployato come sito statico)
+```
 
 ## Riferimenti
 
