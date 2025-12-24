@@ -220,7 +220,7 @@ La configurazione `include: ["/*"]` NON è raccomandata per questo progetto perc
 
 ```
 /
-├── functions/           ← Cloudflare deployta questa directory automaticamente
+├── functions/           ← Cloudflare deploya questa directory automaticamente
 │   └── share/
 │       └── [slug].ts   ← Gestisce /share/:slug
 ├── public/
