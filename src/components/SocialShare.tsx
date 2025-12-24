@@ -15,11 +15,9 @@ interface SocialShareProps {
 export function SocialShare({ slug, title, shareVersion }: SocialShareProps) {
   const { toast } = useToast();
 
-  // Usa il dominio principale per la condivisione (Cloudflare Pages Function)
-  // Questo endpoint /share/{slug} restituisce HTML con i meta tag OG corretti
-  // per i crawler dei social media e reindirizza gli utenti alla pagina dell'articolo
-  const siteUrl = import.meta.env.VITE_SITE_URL || 'https://sabadvance.it';
-  const shareUrl = `${siteUrl}/share/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
+  // Usa il sottodominio Vercel per la condivisione
+  // Questo endpoint restituisce HTML con i meta tag OG corretti per i crawler social
+  const shareUrl = `https://share.sabadvance.it/${encodeURIComponent(slug)}${shareVersion ? `?v=${encodeURIComponent(shareVersion)}` : ''}`;
 
   const handleWhatsApp = () => {
     const text = `${title} - ${shareUrl}`;
