@@ -4,26 +4,35 @@
 Il link `https://sabadvance.it/share/bruce?v=2025-12-22T11:45:52.722201+00:00` restituisce un errore 404.
 
 ## Causa
-Il sito usa Cloudflare Pages Functions per gestire i link di condivisione (`/share/:slug`), ma il file di configurazione routing `_routes.json` era mancante. Questo causava il redirect di tutti i percorsi, incluso `/share/*`, all'applicazione React SPA, che non ha una route per `/share/*`.
+Il sito usa Cloudflare Pages Functions per gestire i link di condivisione (`/share/:slug`). La configurazione iniziale di `_routes.json` era troppo restrittiva (`include: ["/share/*"]`), il che significava che SOLO i percorsi `/share/*` venivano valutati per le Functions, mentre tutti gli altri percorsi venivano trattati come file statici. Questo rompeva il routing SPA per percorsi come `/blog/:slug`, causando 404 quando gli utenti navigavano direttamente a questi URL.
 
 ## Soluzione Implementata
 
-### 1. Aggiunto File `_routes.json`
-Creato il file `/public/_routes.json` per dire esplicitamente a Cloudflare Pages quali route devono essere gestite dalle Functions:
+### 1. Aggiornato File `_routes.json`
+Modificato il file `/public/_routes.json` per gestire correttamente sia le Functions che il routing SPA:
 
 ```json
 {
   "version": 1,
-  "include": [
-    "/share/*"
-  ],
-  "exclude": []
+  "include": ["/*"],
+  "exclude": [
+    "/assets/*",
+    "/favicon.*",
+    "/placeholder.svg",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/_headers",
+    "/_redirects",
+    "/lovable-uploads/*"
+  ]
 }
 ```
 
 Questo garantisce che:
-- Le richieste a `/share/*` vengano gestite dalla Function in `/functions/share/[slug].ts`
-- Tutte le altre richieste vengano gestite dal React SPA
+- Tutti i percorsi (`/*`) vengono valutati per le Functions
+- I file statici (CSS, JS, immagini, ecc.) vengono esclusi dalla valutazione Functions
+- Le richieste a `/share/*` vengono gestite dalla Function in `/functions/share/[slug].ts`
+- Tutti gli altri percorsi cadono attraverso al file `_redirects` che serve `index.html` per il React SPA
 
 ### 2. Aggiornato `.gitignore`
 Aggiunto `.wrangler/` ai file ignorati da git (è una directory di build creata da wrangler per i test locali).
@@ -142,10 +151,14 @@ WhatsApp e Facebook cachano le anteprime. Per forzare l'aggiornamento:
 
 ## File Modificati
 
-- `/public/_routes.json` - NUOVO: Configurazione routing Cloudflare Pages
-- `/public/_redirects` - AGGIORNATO: Commenti migliorati
-- `/.gitignore` - AGGIORNATO: Aggiunto `.wrangler/`
-- `/package.json` - AGGIORNATO: Aggiunto `wrangler` come dev dependency
+- `/public/_routes.json` - AGGIORNATO: Configurazione routing Cloudflare Pages per gestire sia Functions che SPA
+- `/public/_redirects` - ESISTENTE: Gestisce il fallback SPA
+- `/.gitignore` - ESISTENTE: Include `.wrangler/`
+- `/package.json` - ESISTENTE: Include `wrangler` come dev dependency
+
+## Note sulla Configurazione `_routes.json`
+
+La configurazione `_routes.json` con `include: ["/*"]` e `exclude: [...]` è cruciale per il corretto funzionamento del sito. Non usare `include: ["/share/*"]` perché questo rompe il routing SPA facendo in modo che solo i percorsi `/share/*` vengano valutati per le Functions, mentre tutti gli altri vengono trattati come file statici.
 
 ## Riferimenti
 
