@@ -145,89 +145,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="content-section bg-gradient-to-br from-blog-accent/10 to-blog-muted/20">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
-            {/* Interviste */}
-            <Link to="/blog?category=interviste" className="text-center group cursor-pointer">
-              <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
-                <Mic className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-blog-hero mb-6 group-hover:text-blog-terracotta transition-colors duration-300">Interviste</h3>
-              <p className="text-muted-foreground text-lg leading-relaxed group-hover:text-foreground transition-colors duration-300">
-                Conversazioni approfondite e interviste esclusive con esperti e personalità di rilievo.
-              </p>
-            </Link>
-
-            {/* Cucina */}
-            <Link to="/blog?category=cucina" className="text-center group cursor-pointer">
-              <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
-                <ChefHat className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-blog-hero mb-6 group-hover:text-blog-terracotta transition-colors duration-300">Cucina</h3>
-              <p className="text-muted-foreground text-lg leading-relaxed group-hover:text-foreground transition-colors duration-300">
-                Trova deliziose ricette e consigli culinari per arricchire la tua tavola.
-              </p>
-            </Link>
-
-            {/* Consigli di Lifestyle */}
-            <Link to="/blog?category=lifestyle-e-tempo-libero" className="text-center group cursor-pointer">
-              <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
-                <Heart className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
-              </div>
-              <h3 className="text-3xl font-bold text-blog-hero mb-6 group-hover:text-blog-terracotta transition-colors duration-300">Lifestyle e tempo libero</h3>
-              <p className="text-muted-foreground text-lg leading-relaxed group-hover:text-foreground transition-colors duration-300">
-                Consigli di moda, arredamento, benessere e idee per il tempo libero per migliorare la vita quotidiana.
-              </p>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Additional Categories Section */}
-      {additionalCategories.length > 0 && (
-        <section className="content-section bg-gradient-to-br from-blog-muted/5 to-blog-accent/10">
-          <div className="container mx-auto max-w-7xl">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-bold text-blog-hero mb-4">
-                Altre Categorie
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Esplora tutti i nostri argomenti specializzati
-              </p>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              {additionalCategories.map((category) => (
-                <Link 
-                  key={category.id} 
-                  to={`/blog?category=${category.slug}`}
-                  className="group"
-                >
-                  <Badge 
-                    variant="outline" 
-                    className="px-6 py-3 text-base font-medium border-2 border-blog-terracotta/20 bg-background hover:bg-blog-terracotta hover:text-background transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg cursor-pointer"
-                  >
-                    <Tag className="h-4 w-4 mr-2" />
-                    {category.name}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-            
-            <div className="text-center">
-              <Link to="/blog">
-                <Button variant="outline" className="border-blog-terracotta text-blog-terracotta hover:bg-blog-terracotta hover:text-background">
-                  Vedi Tutti gli Articoli
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Latest Articles Section */}
       <section className="content-section-alt bg-gradient-to-br from-blog-muted/5 to-blog-accent/5">
         <div className="container mx-auto max-w-7xl">
@@ -397,6 +314,89 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Categories Section */}
+      <section className="content-section bg-gradient-to-br from-blog-accent/10 to-blog-muted/20">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
+            {/* Interviste */}
+            <Link to="/blog?category=interviste" className="text-center group cursor-pointer">
+              <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                <Mic className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
+              </div>
+              <h3 className="text-3xl font-bold text-blog-hero mb-6 group-hover:text-blog-terracotta transition-colors duration-300">Interviste</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                Conversazioni approfondite e interviste esclusive con esperti e personalità di rilievo.
+              </p>
+            </Link>
+
+            {/* Cucina */}
+            <Link to="/blog?category=cucina" className="text-center group cursor-pointer">
+              <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                <ChefHat className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
+              </div>
+              <h3 className="text-3xl font-bold text-blog-hero mb-6 group-hover:text-blog-terracotta transition-colors duration-300">Cucina</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                Trova deliziose ricette e consigli culinari per arricchire la tua tavola.
+              </p>
+            </Link>
+
+            {/* Consigli di Lifestyle */}
+            <Link to="/blog?category=lifestyle-e-tempo-libero" className="text-center group cursor-pointer">
+              <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-primary shadow-lg flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-xl">
+                <Heart className="h-10 w-10 text-white group-hover:scale-110 transition-transform duration-300" />
+              </div>
+              <h3 className="text-3xl font-bold text-blog-hero mb-6 group-hover:text-blog-terracotta transition-colors duration-300">Lifestyle e tempo libero</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                Consigli di moda, arredamento, benessere e idee per il tempo libero per migliorare la vita quotidiana.
+              </p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional Categories Section */}
+      {additionalCategories.length > 0 && (
+        <section className="content-section bg-gradient-to-br from-blog-muted/5 to-blog-accent/10">
+          <div className="container mx-auto max-w-7xl">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl md:text-5xl font-bold text-blog-hero mb-4">
+                Altre Categorie
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Esplora tutti i nostri argomenti specializzati
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              {additionalCategories.map((category) => (
+                <Link 
+                  key={category.id} 
+                  to={`/blog?category=${category.slug}`}
+                  className="group"
+                >
+                  <Badge 
+                    variant="outline" 
+                    className="px-6 py-3 text-base font-medium border-2 border-blog-terracotta/20 bg-background hover:bg-blog-terracotta hover:text-background transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg cursor-pointer"
+                  >
+                    <Tag className="h-4 w-4 mr-2" />
+                    {category.name}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="text-center">
+              <Link to="/blog">
+                <Button variant="outline" className="border-blog-terracotta text-blog-terracotta hover:bg-blog-terracotta hover:text-background">
+                  Vedi Tutti gli Articoli
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Chi Siamo Section */}
       <section className="content-section bg-gradient-to-br from-blog-hero/5 to-blog-accent/5">
