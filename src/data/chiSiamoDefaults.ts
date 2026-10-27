@@ -38,7 +38,7 @@ export const chiSiamoDefaults: ChiSiamoContent = {
     { title: 'Qualità', text: 'Non cerchiamo la quantità, ma la qualità. Ogni articolo è curato nei minimi dettagli per offrire valore reale.' },
   ],
   presentationTitle: 'PRESENTAZIONE DI SABADVANCE',
-  presentationIntro: '',
+  presentationIntro: "<p>Sabadvance è una pagina Facebook e Instagram dedicata allo svago e all'intrattenimento, nata nel 2018 con l'idea di creare uno spazio di svago, condivisione e intrattenimento. Il nome nasce dalla combinazione di SAB, abbreviazione del mio nome, e di un errore curioso: doveva essere advise, ma uno sbaglio di digitazione lo trasformò in advance, e così è rimasto.</p><p>Nei primi mesi, Sabadvance proponeva consigli pratici e numerose ricette, spesso condivise da amiche appassionate e molto brave in cucina. Con il tempo, il progetto è cresciuto e si è trasformato in un vero e proprio web magazine, con rubriche periodiche e contenuti sempre più vari e strutturati.</p><p>Una delle sezioni più seguite è quella delle interviste al personaggio del mese, donne e uomini — noti o meno — che scelgono di raccontarsi con autenticità.</p>",
   calendarIntro: 'Ogni settimana su Sabadvance vengono pubblicati quattro post, secondo questo calendario fisso:',
   calendar: [
     { title: 'Lunedì', text: '<p><strong>Interviste ai protagonisti del mese</strong></p><p><small>Rubrica mensile curata dalla giornalista Valentina Cristiani</small></p>' },
@@ -51,7 +51,7 @@ export const chiSiamoDefaults: ChiSiamoContent = {
   salottoText: '<p>Dal progetto Sabadvance è nato anche un programma televisivo di intrattenimento: "Il Salotto di Sabadvance", che ha già superato le 30 puntate, con ospiti in studio e in collegamento, sempre legati al mondo della pagina.</p>',
   sabrinaTitle: 'Sabrina Bertolani',
   sabrinaSubtitle: 'Fondatrice e Anima di Sabadvance',
-  sabrinaBio: '',
+  sabrinaBio: "<p>Giornalista con una solida esperienza nel settore dell'informazione sportiva, televisiva e web, Sabrina Bertolani è attiva dal 2002 con numerose collaborazioni in ambito editoriale, televisivo e digitale.</p><p>Conduttrice e autrice della trasmissione \"Il Salotto di Sabadvance\", in onda su canali televisivi e piattaforme online, è anche ideatrice e amministratrice unica del progetto SABADVANCE, un web magazine nato nel 2018 e seguito su Facebook e Instagram.</p><p>Nel corso della sua carriera ha collaborato con le emittenti Telereggio e TRC Modena, è stata inviata sui campi della Serie A e ha seguito da vicino la squadra della Correggese Calcio. Ha lavorato anche come redattrice per il giornale aziendale T-News di Transcoop, e ha scritto per il mensile NIMA Magazine.</p><p>Dal 2015 è presenza saltuaria su Telereggio, è stata ospite/opinionista del talk sportivo \"Palle e Palloni\", dedicato a Sassuolo Calcio, Reggiana Calcio e Pallacanestro Reggiana.</p><p>Da anni cura la presentazione di eventi sportivi, culturali e di moda, tra cui fiere, sfilate e incontri letterari. Ha tenuto anche lezioni scolastiche sul mondo dell'informazione, come quella presso la scuola primaria Jean Piaget di Bologna.</p><p>Ha firmato articoli per importanti testate locali come Gazzetta di Reggio, Giornale di Reggio, Ultime Notizie e TuttoReggio, dedicandosi sia al calcio amatoriale che a temi di costume e attualità.</p>",
 };
 
 export const mergeChiSiamo = (saved: Partial<ChiSiamoContent> | null | undefined): ChiSiamoContent => {
