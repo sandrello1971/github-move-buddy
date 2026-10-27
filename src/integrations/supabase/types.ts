@@ -146,6 +146,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content: {
+        Row: {
+          content: Json
+          key: string
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          key: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_visits: {
         Row: {
           id: string
