@@ -13,6 +13,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import EditChiSiamo from "./pages/EditChiSiamo";
 import CreatePost from "./pages/CreatePost";
 import EditPost from "./pages/EditPost";
 import Categories from "./pages/Categories";
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/admin/edit-post/:id" element={<EditPost />} />
               <Route path="/admin/categories" element={<Categories />} />
               <Route path="/admin/users" element={<ManageUsers />} />
+              <Route path="/admin/chi-siamo" element={<EditChiSiamo />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/chi-siamo" element={<ChiSiamo />} />
               <Route path="/cookies" element={<Cookies />} />

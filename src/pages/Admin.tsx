@@ -181,7 +181,13 @@ export default function Admin() {
             <h1 className="text-3xl font-bold text-blog-hero">Pannello Amministrazione</h1>
             <p className="text-muted-foreground mt-2">Gestisci i tuoi post e le categorie del blog</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Link to="/admin/chi-siamo">
+              <Button variant="outline">
+                <Edit className="h-4 w-4 mr-2" />
+                Modifica Chi Siamo
+              </Button>
+            </Link>
             <Link to="/admin/users">
               <Button variant="outline">
                 <Plus className="h-4 w-4 mr-2" />

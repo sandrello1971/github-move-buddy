@@ -7,9 +7,11 @@ interface RichTextEditorProps {
   onChange: (content: string) => void;
   label?: string;
   id?: string;
+  colorMap?: string[];
+  compact?: boolean;
 }
 
-export const RichTextEditor = ({ value, onChange, label, id }: RichTextEditorProps) => {
+export const RichTextEditor = ({ value, onChange, label, id, colorMap, compact }: RichTextEditorProps) => {
   const handleImageUpload = async (blobInfo: any, progress: (percent: number) => void): Promise<string> => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -87,6 +89,8 @@ export const RichTextEditor = ({ value, onChange, label, id }: RichTextEditorPro
             'bullist numlist outdent indent | removeformat | help | ' +
             'link image media table | code fullscreen',
           content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
+          ...(colorMap ? { color_map: colorMap, custom_colors: false } : {}),
+          ...(compact ? { height: 220, menubar: false } : {}),
           skin: 'oxide',
           content_css: 'default',
           branding: false,
